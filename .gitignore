@@ -1,0 +1,21 @@
+# Generiert / temporär – nicht committen
+dashboard.html
+exam/session_*/
+__pycache__/
+*.pyc
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Kompilierte C-Artefakte
+*.o
+a.out
+*.out
+
+# Hinweis: progress.json liegt eine Ebene höher (OneDrive-Root) und ist NICHT Teil dieses Repos.
+# Deine Lösungen unter peer/<übung>/*.c WERDEN committet – das ist gewollt.

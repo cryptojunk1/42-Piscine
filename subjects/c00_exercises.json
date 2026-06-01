@@ -1,0 +1,261 @@
+{
+  "module": "C00",
+  "subject_version": "7.7",
+  "compiler_flags": "-Wall -Wextra -Werror",
+  "norm_flag": "-R CheckForbiddenSourceHeader",
+  "exercises": [
+    {
+      "id": "ex00",
+      "name": "ft_putchar",
+      "directory": "ex00/",
+      "files": ["ft_putchar.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_putchar(char c);",
+      "description": "Write a function that displays the character passed as a parameter using write(1, &c, 1).",
+      "description_de": "Schreibe eine Funktion, die das übergebene Zeichen auf der Standardausgabe ausgibt. Du musst dafür den Systemaufruf write() verwenden – kein printf, kein putchar.",
+      "why_it_matters": "write() ist der rohe Kern jeder Ausgabe in Unix. Alles andere (printf, putchar, cout) baut letztlich darauf auf. Wer write() versteht, versteht wie Bytes wirklich zum Terminal gelangen.",
+      "example_output": "ft_putchar('A')  →  A\nft_putchar('3')  →  3",
+      "learning_links": [
+        { "title": "man 2 write – Linux Manpage", "url": "https://man7.org/linux/man-pages/man2/write.2.html" },
+        { "title": "ASCII-Tabelle", "url": "https://www.asciitable.com/" },
+        { "title": "File Descriptors erklärt", "url": "https://www.geeksforgeeks.org/input-output-system-calls-c-create-open-close-read-write/" }
+      ],
+      "xp_reward": 20,
+      "test_cases": [
+        { "id": "tc1", "input_args": ["'A'"], "expected_output": "A", "description": "Grossbuchstabe" },
+        { "id": "tc2", "input_args": ["'z'"], "expected_output": "z", "description": "Kleinbuchstabe" },
+        { "id": "tc3", "input_args": ["'0'"], "expected_output": "0", "description": "Ziffer" }
+      ],
+      "hints": {
+        "1_concept": "write() ist ein Systemaufruf (syscall), der direkt Bytes in einen File Descriptor schreibt. FD 1 = stdout. Du brauchst #include <unistd.h>.",
+        "2_denkanstoß": "Du hast einen char c. write() braucht eine Adresse (&c) und eine Länge (1 Byte). Wie sieht der Aufruf aus?",
+        "3_pseudocode": "function ft_putchar(c):\n  write(stdout, address_of(c), 1_byte)",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_putchar(char c)\n{\n    write(1, &c, 1);\n}"
+      }
+    },
+    {
+      "id": "ex01",
+      "name": "ft_print_alphabet",
+      "directory": "ex01/",
+      "files": ["ft_print_alphabet.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_alphabet(void);",
+      "description": "Create a function that displays the alphabet in lowercase on a single line, ascending order, starting from 'a'.",
+      "description_de": "Schreibe eine Funktion, die das komplette Alphabet in Kleinbuchstaben auf einer Zeile ausgibt, aufsteigend von 'a' bis 'z'. Nur write() erlaubt – du musst eine Schleife über Zeichen bauen.",
+      "why_it_matters": "Zeichen sind in C nur Zahlen. 'a' = 97, 'b' = 98, ... 'z' = 122. Das ist die Basis für alle String-Operationen. Wer das verinnerlicht hat, versteht später memset, strcpy & Co. sofort.",
+      "example_output": "abcdefghijklmnopqrstuvwxyz",
+      "learning_links": [
+        { "title": "ASCII-Tabelle (a=97, z=122)", "url": "https://www.asciitable.com/" },
+        { "title": "Loops in C – while/for", "url": "https://en.cppreference.com/w/c/language/while" },
+        { "title": "Zeichen und ihr ASCII-Wert", "url": "https://www.geeksforgeeks.org/character-arithmetic-c-c/" }
+      ],
+      "xp_reward": 25,
+      "test_cases": [
+        { "id": "tc1", "input_args": [], "expected_output": "abcdefghijklmnopqrstuvwxyz", "description": "Vollstaendiges Alphabet" }
+      ],
+      "hints": {
+        "1_concept": "ASCII-Tabelle: 'a' = 97, 'z' = 122. Zeichen sind Zahlen – du kannst mit ihnen rechnen und sie iterieren.",
+        "2_denkanstoß": "Wie kannst du write() in einer Schleife nutzen, um von 'a' bis 'z' zu laufen?",
+        "3_pseudocode": "function ft_print_alphabet():\n  c = 'a'\n  while c <= 'z':\n    write(c)\n    c = c + 1",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_print_alphabet(void)\n{\n    char c;\n    c = 'a';\n    while (c <= 'z')\n    {\n        write(1, &c, 1);\n        c++;\n    }\n}"
+      }
+    },
+    {
+      "id": "ex02",
+      "name": "ft_print_reverse_alphabet",
+      "directory": "ex02/",
+      "files": ["ft_print_reverse_alphabet.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_reverse_alphabet(void);",
+      "description": "Create a function that displays the alphabet in lowercase on a single line, descending order, starting from 'z'.",
+      "description_de": "Wie ft_print_alphabet, aber rückwärts: von 'z' bis 'a'. Klingt trivial – aber welche Schleifenbedingung ist korrekt? Welche Stolperfalle gibt es bei char?",
+      "why_it_matters": "Iteration in beide Richtungen ist fundamentales Handwerkszeug. Ausserdem lernst du, dass signed/unsigned char unterschiedlich verhalten kann – relevant für spätere Projekte.",
+      "example_output": "zyxwvutsrqponmlkjihgfedcba",
+      "learning_links": [
+        { "title": "ASCII-Tabelle", "url": "https://www.asciitable.com/" },
+        { "title": "char signed vs unsigned in C", "url": "https://www.geeksforgeeks.org/signed-unsigned-char-c-cpp/" }
+      ],
+      "xp_reward": 25,
+      "test_cases": [
+        { "id": "tc1", "input_args": [], "expected_output": "zyxwvutsrqponmlkjihgfedcba", "description": "Alphabet rueckwaerts" }
+      ],
+      "hints": {
+        "1_concept": "Gleiche Idee wie ft_print_alphabet, aber umgekehrte Richtung. Was ändert sich an Startwert und Bedingung?",
+        "2_denkanstoß": "Wenn du bei 'z' startest und runtergehst: Wann hörst du auf? Wie lautet die Schleifenbedingung?",
+        "3_pseudocode": "function ft_print_reverse_alphabet():\n  c = 'z'\n  while c >= 'a':\n    write(c)\n    c = c - 1",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_print_reverse_alphabet(void)\n{\n    char c;\n    c = 'z';\n    while (c >= 'a')\n    {\n        write(1, &c, 1);\n        c--;\n    }\n}"
+      }
+    },
+    {
+      "id": "ex03",
+      "name": "ft_print_numbers",
+      "directory": "ex03/",
+      "files": ["ft_print_numbers.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_numbers(void);",
+      "description": "Create a function that displays all digits on a single line, ascending order.",
+      "description_de": "Gib alle Ziffern von 0 bis 9 auf einer Zeile aus. Wichtig: du gibst die Zeichen '0' bis '9' aus, nicht die Zahlen 0-9. '0' hat ASCII-Wert 48.",
+      "why_it_matters": "'0' ist nicht 0 – der Unterschied zwischen Zeichen und Zahlenwert ist eine der häufigsten Verwirrungen in C. Das hier einzuprägen verhindert Bugs in ft_putnbr und later itoa.",
+      "example_output": "0123456789",
+      "learning_links": [
+        { "title": "ASCII-Tabelle ('0'=48)", "url": "https://www.asciitable.com/" },
+        { "title": "Ziffern als Zeichen in C", "url": "https://www.geeksforgeeks.org/character-arithmetic-c-c/" }
+      ],
+      "xp_reward": 25,
+      "test_cases": [
+        { "id": "tc1", "input_args": [], "expected_output": "0123456789", "description": "Alle Ziffern" }
+      ],
+      "hints": {
+        "1_concept": "ASCII: '0' = 48, '9' = 57. Ziffern sind auch nur Zeichen – gleiche Schleifenlogik wie beim Alphabet.",
+        "2_denkanstoß": "Wie lautet Start, Ende und Schrittweite? Wie gibst du ein Zeichen aus?",
+        "3_pseudocode": "function ft_print_numbers():\n  c = '0'\n  while c <= '9':\n    write(c)\n    c = c + 1",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_print_numbers(void)\n{\n    char c;\n    c = '0';\n    while (c <= '9')\n    {\n        write(1, &c, 1);\n        c++;\n    }\n}"
+      }
+    },
+    {
+      "id": "ex04",
+      "name": "ft_is_negative",
+      "directory": "ex04/",
+      "files": ["ft_is_negative.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_is_negative(int n);",
+      "description": "Create a function that displays 'N' if n is negative, 'P' if positive or zero.",
+      "description_de": "Prüfe das Vorzeichen eines Integers. Gib 'N' aus wenn negativ, 'P' wenn positiv oder null. Beachte: 0 gilt als positiv (P)! Teste auch INT_MIN und INT_MAX.",
+      "why_it_matters": "Vorzeichen-Check und if/else – Grundbaustein jeder Logik. INT_MIN ist ein Sonderfall der immer wieder auftaucht (auch in ft_putnbr). Wer das jetzt versteht, ist vorbereitet.",
+      "example_output": "ft_is_negative(-1)   →  N\nft_is_negative(0)    →  P\nft_is_negative(42)   →  P",
+      "learning_links": [
+        { "title": "if/else in C", "url": "https://en.cppreference.com/w/c/language/if" },
+        { "title": "INT_MIN und INT_MAX (limits.h)", "url": "https://en.cppreference.com/w/c/types/limits" },
+        { "title": "Integer-Typen in C", "url": "https://en.cppreference.com/w/c/language/arithmetic_types" }
+      ],
+      "xp_reward": 30,
+      "test_cases": [
+        { "id": "tc1", "input_args": ["-1"], "expected_output": "N", "description": "Negativ" },
+        { "id": "tc2", "input_args": ["0"], "expected_output": "P", "description": "Null = positiv" },
+        { "id": "tc3", "input_args": ["42"], "expected_output": "P", "description": "Positiv" },
+        { "id": "tc4", "input_args": ["-2147483648"], "expected_output": "N", "description": "INT_MIN" }
+      ],
+      "hints": {
+        "1_concept": "if-else Verzweigung. Du hast ein int n und musst ein char-Zeichen ausgeben – entweder 'N' oder 'P'.",
+        "2_denkanstoß": "Wie prüfst du ob n negativ ist (< 0)? Was schreibst du dann? Beachte: 0 gilt als positiv.",
+        "3_pseudocode": "function ft_is_negative(n):\n  if n < 0:\n    write('N')\n  else:\n    write('P')",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_is_negative(int n)\n{\n    char c;\n    if (n < 0)\n        c = 'N';\n    else\n        c = 'P';\n    write(1, &c, 1);\n}"
+      }
+    },
+    {
+      "id": "ex05",
+      "name": "ft_print_comb",
+      "directory": "ex05/",
+      "files": ["ft_print_comb.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_comb(void);",
+      "description": "Display all different combinations of three different digits in ascending order. Output: 012, 013, ..., 789",
+      "description_de": "Gib alle möglichen Kombinationen von drei verschiedenen Ziffern (0-9) aufsteigend aus. Format: 012, 013, ..., 789 – jede Zahl nur einmal, keine Wiederholungen, durch Komma+Leerzeichen getrennt. Das ist ein Sprung in der Schwierigkeit!",
+      "why_it_matters": "Drei verschachtelte Schleifen + Kombinatorik. Dieses Muster – innere Schleife startet NACH der äusseren – ist die Basis für alle Kombinationsprobleme. Ausserdem: das letzte Element bekommt kein ', ' – Sonderfall-Behandlung üben.",
+      "example_output": "012, 013, 014, ..., 789",
+      "learning_links": [
+        { "title": "Nested loops in C", "url": "https://www.geeksforgeeks.org/nested-loops-in-c/" },
+        { "title": "Kombinatorik einfach erklärt", "url": "https://www.mathsisfun.com/combinatorics/combinations-permutations.html" },
+        { "title": "ASCII-Tabelle", "url": "https://www.asciitable.com/" }
+      ],
+      "xp_reward": 50,
+      "test_cases": [
+        { "id": "tc1_start", "input_args": [], "expected_output_startswith": "012, 013, 014", "description": "Beginn korrekt" },
+        { "id": "tc2_end",   "input_args": [], "expected_output_endswith": "789",            "description": "Ende ohne trailing comma" }
+      ],
+      "hints": {
+        "1_concept": "Kombinatorik: 3 verschiedene aufsteigende Ziffern. Drei verschachtelte Schleifen – jede innere Schleife startet NACH der äusseren.",
+        "2_denkanstoß": "Wenn i, j, k die drei Ziffern sind: Welche Grenzen haben die Schleifen? Das Trennzeichen ', ' kommt überall ausser nach dem letzten Eintrag.",
+        "3_pseudocode": "for i from 0 to 7:\n  for j from i+1 to 8:\n    for k from j+1 to 9:\n      write i, j, k\n      if not last: write ', '",
+        "4_notausgang": "Verwende drei verschachtelte while-Schleifen. Letzter Eintrag = i==7 && j==8 && k==9."
+      }
+    },
+    {
+      "id": "ex06",
+      "name": "ft_print_comb2",
+      "directory": "ex06/",
+      "files": ["ft_print_comb2.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_comb2(void);",
+      "description": "Display all different combinations of two two-digit numbers (00-99) in ascending order. Output: 00 01, 00 02, ..., 98 99",
+      "description_de": "Gib alle Paare von zweistelligen Zahlen (00-99) aus, bei denen die erste Zahl kleiner als die zweite ist. Format: 00 01, 00 02, ..., 98 99. Führende Nullen müssen stimmen (07, nicht 7)!",
+      "why_it_matters": "Zweistellige Ausgabe mit führenden Nullen: du lernst Zehner (n/10) und Einer (n%10) zu trennen. Dieses Muster steckt in ft_putnbr und vielen späteren Projekten.",
+      "example_output": "00 01, 00 02, 00 03, ..., 97 99, 98 99",
+      "learning_links": [
+        { "title": "Modulo und Division in C", "url": "https://www.geeksforgeeks.org/modulo-operator-in-c-cpp/" },
+        { "title": "Nested loops", "url": "https://www.geeksforgeeks.org/nested-loops-in-c/" }
+      ],
+      "xp_reward": 60,
+      "test_cases": [
+        { "id": "tc1_start", "input_args": [], "expected_output_startswith": "00 01, 00 02", "description": "Beginn korrekt" },
+        { "id": "tc2_end",   "input_args": [], "expected_output_endswith": "98 99",        "description": "Ende korrekt" }
+      ],
+      "hints": {
+        "1_concept": "Ähnlich ft_print_comb, aber jetzt zwei zweistellige Zahlen. Jede Zahl von 00-99, erste immer kleiner als zweite.",
+        "2_denkanstoß": "Wie gibst du eine zweistellige Zahl aus? Zehner = n/10, Einer = n%10.",
+        "3_pseudocode": "for i from 0 to 98:\n  for j from i+1 to 99:\n    write tens(i), ones(i), ' ', tens(j), ones(j)\n    if not last: write ', '",
+        "4_notausgang": "Schreibe eine Hilfsfunktion write_two(n) die n/10 und n%10 ausgibt. Nutze sie in der Schleife."
+      }
+    },
+    {
+      "id": "ex07",
+      "name": "ft_putnbr",
+      "directory": "ex07/",
+      "files": ["ft_putnbr.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_putnbr(int nb);",
+      "description": "Create a function that displays the integer passed as parameter. Must handle all int values including INT_MIN and INT_MAX.",
+      "description_de": "Gib einen Integer aus - egal ob positiv, negativ, 0, INT_MAX (2147483647) oder INT_MIN (-2147483648). INT_MIN ist der fiese Sonderfall: -INT_MIN wuerde ueberlaufen! Du brauchst eine Spezialbehandlung dafuer.",
+      "why_it_matters": "Rekursion pur. ft_putnbr ist die klassische Einfuehrung in rekursives Denken. Ausserdem: Integer-Overflow ist ein reales Bug-Risiko. Wer INT_MIN korrekt behandelt, denkt wie ein sicherer Programmierer.",
+      "example_output": "ft_putnbr(42)          ->  42\nft_putnbr(-42)         ->  -42\nft_putnbr(0)           ->  0\nft_putnbr(2147483647)  ->  2147483647\nft_putnbr(-2147483648) ->  -2147483648",
+      "learning_links": [
+        { "title": "Rekursion in C erklaert", "url": "https://www.geeksforgeeks.org/recursion/" },
+        { "title": "INT_MIN / INT_MAX (limits.h)", "url": "https://en.cppreference.com/w/c/types/limits" },
+        { "title": "Integer Overflow - warum gefaehrlich?", "url": "https://www.geeksforgeeks.org/integer-overflow-in-c-with-examples/" }
+      ],
+      "xp_reward": 60,
+      "test_cases": [
+        { "id": "tc1", "input_args": ["42"],          "expected_output": "42",          "description": "Positiv" },
+        { "id": "tc2", "input_args": ["-42"],         "expected_output": "-42",         "description": "Negativ" },
+        { "id": "tc3", "input_args": ["0"],           "expected_output": "0",           "description": "Null" },
+        { "id": "tc4", "input_args": ["2147483647"],  "expected_output": "2147483647",  "description": "INT_MAX" },
+        { "id": "tc5", "input_args": ["-2147483648"], "expected_output": "-2147483648", "description": "INT_MIN (Sonderfall!)" }
+      ],
+      "hints": {
+        "1_concept": "Rekursion: letzte Stelle = nb %% 10, Rest = nb / 10. Negatives Vorzeichen extra behandeln. INT_MIN Sonderfall: -INT_MIN wuerde ueberlaufen!",
+        "2_denkanstoß": "Denk rekursiv: putnbr(42) -> putnbr(4), dann 2. Wie gehst du mit negativen Zahlen um?",
+        "3_pseudocode": "function ft_putnbr(nb):\n  if nb == INT_MIN: write -2147483648 direkt\n  if nb < 0: write -, then putnbr(-nb)\n  if nb >= 10: putnbr(nb / 10)\n  write char(0 + nb %% 10)",
+        "4_notausgang": "INT_MIN Sonderfall zuerst: if (nb == -2147483648) { write(1, -2147483648, 11); return; }"
+      }
+    },
+    {
+      "id": "ex08",
+      "name": "ft_print_combn",
+      "directory": "ex08/",
+      "files": ["ft_print_combn.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_print_combn(int n);",
+      "description": "Display all different combinations of n different digits in ascending order. 0 < n < 10.",
+      "description_de": "Die Boss-Aufgabe von C00: Verallgemeinere ft_print_comb auf beliebige n Ziffern. n=1 alle Einzelziffern, n=2 alle Paare, n=3 wie ft_print_comb, n=9 genau eine Kombination. Ohne Rekursion kaum loesbar.",
+      "why_it_matters": "Das ist eine echte algorithmische Herausforderung. Rekursive Kombinations-Generierung ist das Fundament fuer Backtracking-Algorithmen (Sudoku-Solver, Pathfinding...). Wer das loest, hat verstanden wie Rekursion Zustand traegt.",
+      "example_output": "n=1: 0, 1, 2, ..., 9\nn=2: 01, 02, ..., 89\nn=3: 012, 013, ..., 789",
+      "learning_links": [
+        { "title": "Rekursion in C", "url": "https://www.geeksforgeeks.org/recursion/" },
+        { "title": "Backtracking Algorithmen", "url": "https://www.geeksforgeeks.org/backtracking-algorithms/" },
+        { "title": "Kombinatorik - Kombinationen ohne Wiederholung", "url": "https://www.mathsisfun.com/combinatorics/combinations-permutations.html" }
+      ],
+      "xp_reward": 80,
+      "test_cases": [
+        { "id": "tc1", "input_args": ["2"], "expected_output_startswith": "01, 02", "description": "n=2 Anfang" },
+        { "id": "tc2", "input_args": ["2"], "expected_output_endswith": "89",      "description": "n=2 Ende" },
+        { "id": "tc3", "input_args": ["1"], "expected_output": "0, 1, 2, 3, 4, 5, 6, 7, 8, 9", "description": "n=1" }
+      ],
+      "hints": {
+        "1_concept": "Verallgemeinerung von ft_print_comb. Klassische Rekursions-Aufgabe: Hilfsfunktion mit Position, min_digit, gewaehlten Ziffern.",
+        "2_denkanstoß": "Fuer jede Position waehlst du eine Ziffer groesser als letzte. Rekursion: fill(pos, min_d, chosen[]). Base case: pos == n -> ausgeben.",
+        "3_pseudocode": "function fill(pos, min_d, chosen[], n):\n  for d from min_d to (9-(n-pos-1)):\n    chosen[pos] = d\n    if pos == n-1: print + separator\n    else: fill(pos+1, d+1, chosen, n)",
+        "4_notausgang": "Die Grenze 9-(n-pos-1) stellt sicher dass noch genug Ziffern fuer die restlichen Positionen uebrig sind."
+      }
+    }
+  ]
+}

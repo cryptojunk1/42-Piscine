@@ -15,7 +15,7 @@
 /* Create a function that displays the alphabet in lowercase on a single line, ascending order, starting from 'a'. */
 /* Erlaubt: write */
 
-void ft_print_alphabet(void);
+void ft_print_alphabet(void)
 {
     char c;
     c = 'a';

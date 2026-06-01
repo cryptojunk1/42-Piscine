@@ -225,8 +225,13 @@ EOF
       ;;
   esac
 
-  # Kompilieren
-  if ! cc -Wall -Wextra -Werror "$c_file" "$tmpdir/main.c" -o "$tmpdir/a.out" 2>"$tmpdir/compile_err"; then
+  # Kompilieren (Compiler automatisch finden: cc → gcc → clang)
+  CC="$(command -v cc || command -v gcc || command -v clang || true)"
+  if [ -z "$CC" ]; then
+    echo -e "${RED}✗ Kein C-Compiler! In WSL installieren: sudo apt install -y build-essential${RESET}"
+    return 1
+  fi
+  if ! "$CC" -Wall -Wextra -Werror "$c_file" "$tmpdir/main.c" -o "$tmpdir/a.out" 2>"$tmpdir/compile_err"; then
     echo -e "${RED}✗ Kompilierfehler:${RESET}"
     cat "$tmpdir/compile_err"
     return 1

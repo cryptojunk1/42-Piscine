@@ -7,7 +7,10 @@
 #         bash check.sh ex00
 # =============================================================================
 
-set -euo pipefail
+# WICHTIG: KEIN 'set -e'! norminette und cc geben bei Fehlern absichtlich
+# einen Exit-Code != 0 zurück – das Script behandelt das selbst (Score/Grade).
+# Mit 'set -e' würde es bei der ersten Norm-/Compile-Meldung stumm abbrechen.
+set -uo pipefail
 
 # Pfade (relativ zu diesem Script → absolut auflösen)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -197,7 +200,16 @@ MAINEOF
     ;;
 esac
 
-COMPILE_OUT=$(cc -Wall -Wextra -Werror "$C_FILE" "$TMPDIR_CHECK/main.c" -o "$TMPDIR_CHECK/a.out" 2>&1)
+# C-Compiler finden (cc → gcc → clang)
+CC="$(command -v cc || command -v gcc || command -v clang || true)"
+if [ -z "$CC" ]; then
+  echo -e "${RED}✗ Kein C-Compiler in WSL gefunden!${RESET}"
+  echo -e "${YELLOW}So installierst du ihn (einmalig, in WSL):${RESET}"
+  echo -e "  ${CYAN}sudo apt update && sudo apt install -y build-essential${RESET}"
+  echo -e "Das liefert ${BOLD}gcc${RESET}, ${BOLD}cc${RESET}, ${BOLD}make${RESET}. Danach Check erneut starten."
+  exit 1
+fi
+COMPILE_OUT=$("$CC" -Wall -Wextra -Werror "$C_FILE" "$TMPDIR_CHECK/main.c" -o "$TMPDIR_CHECK/a.out" 2>&1)
 if [ $? -ne 0 ]; then
   echo -e "${RED}✗ Kompilierfehler:${RESET}"
   echo "$COMPILE_OUT"

@@ -1,0 +1,327 @@
+{
+  "description": "Kanonische Lernreihenfolge fuer das 42-Lerntool. Einzige Quelle der Wahrheit fuer Phasen-, Modul- und Circle-Reihenfolge. Launcher + Dashboard lesen diese Datei (sobald Multi-Modul-Support gebaut ist).",
+  "version": "2.0",
+  "updated": "2026-06-02",
+  "phases": [
+    {
+      "id": "piscine",
+      "label": "Piscine",
+      "order": 1,
+      "description": "Einmonatiger Einstieg. Linearer Hauptpfad: Shell zuerst, dann die C-Module.",
+      "path": [
+        {
+          "id": "Shell00",
+          "label": "Shell 00",
+          "type": "core",
+          "order": 1,
+          "built": true,
+          "note": "Erster Einstieg: Unix-Shell-Grundlagen"
+        },
+        {
+          "id": "Shell01",
+          "label": "Shell 01",
+          "type": "core",
+          "order": 2,
+          "built": true,
+          "note": "Shell-Vertiefung"
+        },
+        {
+          "id": "C00",
+          "label": "C 00",
+          "type": "core",
+          "order": 3,
+          "built": true,
+          "note": "Erste C-Funktionen (write, Schleifen) - bereits im Tool"
+        },
+        {
+          "id": "C01",
+          "label": "C 01",
+          "type": "core",
+          "order": 4,
+          "built": true
+        },
+        {
+          "id": "C02",
+          "label": "C 02",
+          "type": "core",
+          "order": 5,
+          "built": false
+        },
+        {
+          "id": "C03",
+          "label": "C 03",
+          "type": "core",
+          "order": 6,
+          "built": false
+        },
+        {
+          "id": "C04",
+          "label": "C 04",
+          "type": "core",
+          "order": 7,
+          "built": false
+        },
+        {
+          "id": "C05",
+          "label": "C 05",
+          "type": "core",
+          "order": 8,
+          "built": false
+        },
+        {
+          "id": "C06",
+          "label": "C 06",
+          "type": "core",
+          "order": 9,
+          "built": false
+        },
+        {
+          "id": "C07",
+          "label": "C 07",
+          "type": "core",
+          "order": 10,
+          "built": false
+        },
+        {
+          "id": "C08",
+          "label": "C 08",
+          "type": "core",
+          "order": 11,
+          "built": false
+        },
+        {
+          "id": "C09",
+          "label": "C 09",
+          "type": "core",
+          "order": 12,
+          "built": false
+        },
+        {
+          "id": "C10",
+          "label": "C 10",
+          "type": "core",
+          "order": 13,
+          "built": false
+        },
+        {
+          "id": "C11",
+          "label": "C 11",
+          "type": "core",
+          "order": 14,
+          "built": false
+        },
+        {
+          "id": "C12",
+          "label": "C 12",
+          "type": "core",
+          "order": 15,
+          "built": false
+        },
+        {
+          "id": "C13",
+          "label": "C 13",
+          "type": "core",
+          "order": 16,
+          "built": false
+        }
+      ],
+      "side_quests": {
+        "description": "Gruppenarbeiten - nebenbei/optional, nicht im linearen Hauptpfad. Im echten 42 am Wochenende/Team.",
+        "items": [
+          {
+            "id": "Rush00",
+            "label": "Rush 00",
+            "type": "group_optional",
+            "built": false
+          },
+          {
+            "id": "Rush01",
+            "label": "Rush 01",
+            "type": "group_optional",
+            "built": false
+          },
+          {
+            "id": "Rush02",
+            "label": "Rush 02",
+            "type": "group_optional",
+            "built": false
+          },
+          {
+            "id": "BSQ",
+            "label": "BSQ",
+            "type": "group_optional",
+            "built": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "common_core",
+      "label": "Common Core",
+      "order": 2,
+      "description": "Hauptstudium nach der Piscine. In Ringen ('Circles') organisiert; Circles schalten progressiv frei. Innerhalb eines Circles sind mehrere Projekte teils parallel - Reihenfolge hier ist Empfehlung, nicht zwingend.",
+      "circles": [
+        {
+          "circle": 0,
+          "label": "Circle 0",
+          "order": 1,
+          "projects": [
+            {
+              "id": "Libft",
+              "label": "Libft",
+              "built": false
+            }
+          ]
+        },
+        {
+          "circle": 1,
+          "label": "Circle 1",
+          "order": 2,
+          "projects": [
+            {
+              "id": "ft_printf",
+              "label": "ft_printf",
+              "built": false
+            },
+            {
+              "id": "get_next_line",
+              "label": "get_next_line",
+              "built": false
+            },
+            {
+              "id": "Born2beroot",
+              "label": "Born2beroot",
+              "built": false,
+              "note": "System/Admin, parallel machbar"
+            }
+          ]
+        },
+        {
+          "circle": 2,
+          "label": "Circle 2",
+          "order": 3,
+          "projects": [
+            {
+              "id": "push_swap",
+              "label": "push_swap",
+              "built": false
+            },
+            {
+              "id": "minitalk",
+              "label": "minitalk",
+              "built": false
+            },
+            {
+              "id": "pipex",
+              "label": "pipex",
+              "built": false
+            },
+            {
+              "id": "so_long",
+              "label": "so_long",
+              "built": false,
+              "note": "grafisch (minilibx)"
+            },
+            {
+              "id": "FdF",
+              "label": "FdF",
+              "built": false,
+              "note": "grafisch (minilibx)"
+            },
+            {
+              "id": "fract-ol",
+              "label": "fract-ol",
+              "built": false,
+              "note": "grafisch (minilibx)"
+            }
+          ]
+        },
+        {
+          "circle": 3,
+          "label": "Circle 3",
+          "order": 4,
+          "projects": [
+            {
+              "id": "Philosophers",
+              "label": "Philosophers",
+              "built": false
+            },
+            {
+              "id": "minishell",
+              "label": "minishell",
+              "built": false,
+              "note": "Team-Projekt (2er)"
+            }
+          ]
+        },
+        {
+          "circle": 4,
+          "label": "Circle 4",
+          "order": 5,
+          "projects": [
+            {
+              "id": "NetPractice",
+              "label": "NetPractice",
+              "built": false
+            },
+            {
+              "id": "cub3d",
+              "label": "cub3d",
+              "built": false,
+              "note": "grafisch, Team (2er)"
+            },
+            {
+              "id": "miniRT",
+              "label": "miniRT",
+              "built": false,
+              "note": "grafisch, Team (2er)"
+            },
+            {
+              "id": "CPP_00_04",
+              "label": "CPP Module 00-04",
+              "built": false
+            }
+          ]
+        },
+        {
+          "circle": 5,
+          "label": "Circle 5",
+          "order": 6,
+          "projects": [
+            {
+              "id": "CPP_05_09",
+              "label": "CPP Module 05-09",
+              "built": false
+            },
+            {
+              "id": "ft_irc",
+              "label": "ft_irc",
+              "built": false,
+              "note": "Team-Projekt"
+            },
+            {
+              "id": "webserv",
+              "label": "webserv",
+              "built": false,
+              "note": "Team-Projekt"
+            },
+            {
+              "id": "Inception",
+              "label": "Inception",
+              "built": false,
+              "note": "Docker/DevOps"
+            }
+          ]
+        },
+        {
+          "circle": 6,
+          "label": "Circle 6 (Aeusserer Ring)",
+          "order": 7,
+          "type": "electives",
+          "note": "Spezialisierungen/Wahlprojekte (ft_transcendence, Cybersecurity, libasm, ft_kalman, Unity, BGP u.v.m.) - NICHT linear, frei waehlbar.",
+          "projects": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,248 @@
+{
+  "module": "Shell00",
+  "label": "Shell 00",
+  "type": "shell",
+  "version": "4.5",
+  "exercises": [
+    {
+      "id": "ex00",
+      "name": "z",
+      "type": "shell",
+      "directory": "ex00/",
+      "files": ["z"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create a file called 'z' that outputs 'Z' followed by a newline when cat is used on it.",
+      "description_de": "Erstelle eine Datei namens 'z', die bei 'cat z' ein großes 'Z' gefolgt von einem Zeilenumbruch ausgibt. Kein Shell-Skript – denk an das Magic-Byte.",
+      "why_it_matters": "Zeigt, dass Dateien in Unix mehr sind als nur Text. Du lernst etwas über executable scripts, Dateiberechtigungen und wie die Shell Dateien ausführt.",
+      "example_output": "cat z\nZ\n",
+      "xp_reward": 15,
+      "learning_links": [
+        {"title": "Bash Shebang erklärt", "url": "https://linuxhandbook.com/shebang/"},
+        {"title": "chmod man page", "url": "https://man7.org/linux/man-pages/man1/chmod.1.html"}
+      ],
+      "hints": {
+        "1_concept": "Eine Datei kann ausführbaren Shell-Code enthalten. Was passiert wenn cat eine Datei liest? Es gibt den Inhalt aus. Was müsste der Inhalt sein?",
+        "2_denkanstoß": "cat liest den Inhalt und gibt ihn auf stdout aus. Was wäre der Inhalt der Datei, damit 'Z\\n' ausgegeben wird?",
+        "3_pseudocode": "Datei z mit einem Shebang und 'echo Z' befüllen, dann ausführbar machen? Nein – cat FÜHRT NICHT AUS. cat liest. Also muss der rohe Text 'Z\\n' drin sein.",
+        "4_notausgang": "printf 'Z\\n' > z\nDas war's. cat gibt den Dateiinhalt aus – also einfach Z + Newline reinschreiben."
+      }
+    },
+    {
+      "id": "ex01",
+      "name": "testShell00",
+      "type": "shell",
+      "directory": "ex01/",
+      "files": ["testShell00.tar"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create a file 'testShell00' with permissions -r--r-xr-x (0555 lesen+exec), then pack it as testShell00.tar.",
+      "description_de": "Erstelle eine Datei 'testShell00' mit den Berechtigungen -r--r-xr-x und verpacke sie als testShell00.tar mit: tar -cf testShell00.tar testShell00",
+      "why_it_matters": "Unix-Dateiberechtigungen (rwx für owner/group/others) sind fundamental. chmod versteht sowohl Oktal (0555) als auch symbolische Notation.",
+      "example_output": "ls -l\n-r--r-xr-x 1 XX XX 40 Jun 1 23:42 testShell00",
+      "xp_reward": 20,
+      "learning_links": [
+        {"title": "chmod Tutorial", "url": "https://www.geeksforgeeks.org/chmod-command-linux/"},
+        {"title": "tar Tutorial", "url": "https://linuxhandbook.com/tar-command/"}
+      ],
+      "hints": {
+        "1_concept": "Dateiberechtigungen: owner/group/others, jeweils r/w/x. -r--r-xr-x bedeutet: Owner=r--, Group=r-x, Others=r-x",
+        "2_denkanstoß": "chmod kann Oktal-Zahlen nehmen. r=4, w=2, x=1. Owner r-- = 4, Group r-x = 5, Others r-x = 5. chmod 455 testShell00?",
+        "3_pseudocode": "touch testShell00; chmod 455 testShell00; tar -cf testShell00.tar testShell00",
+        "4_notausgang": "touch testShell00\nchmod 455 testShell00\ntar -cf testShell00.tar testShell00"
+      }
+    },
+    {
+      "id": "ex02",
+      "name": "exo2",
+      "type": "shell",
+      "directory": "ex02/",
+      "files": ["exo2.tar"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create the specified file/directory structure with exact permissions, then pack as exo2.tar.",
+      "description_de": "Erstelle die vorgegebene Datei-/Verzeichnisstruktur mit exakten Berechtigungen (test0 bis test6) und verpacke sie mit: tar -cf exo2.tar *",
+      "why_it_matters": "Komplexere Dateiberechtigungen: Directories, Symlinks, Hard Links. ln für Hard Links, ln -s für Symlinks.",
+      "example_output": "ls -l\ndrwx--xr-x test0\n-rwx--xr-- test1\ndr-x---r-- test2\n...",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "ln (hard links)", "url": "https://man7.org/linux/man-pages/man1/ln.1.html"},
+        {"title": "Symlinks erklärt", "url": "https://www.geeksforgeeks.org/soft-hard-links-unixlinux/"}
+      ],
+      "hints": {
+        "1_concept": "test6 -> test0 ist ein Symlink (lrwxrwxrwx). test3 und test5 haben denselben Inode (Hard Link). Directories brauchen mkdir, Files touch.",
+        "2_denkanstoß": "mkdir test0; chmod 713 test0. touch test1; chmod 741 test1. mkdir test2; chmod 504 test2. Für Hard Link: touch test3; ln test3 test5. Symlink: ln -s test0 test6",
+        "3_pseudocode": "mkdir + chmod für jedes Verzeichnis. touch + chmod für jede Datei. ln für Hard Links. ln -s für Symlinks. Dann tar.",
+        "4_notausgang": "mkdir test0; chmod 713 test0\ntouch test1; chmod 741 test1\nmkdir test2; chmod 504 test2\ntouch test3; chmod 404 test3\ntouch test4; chmod 601 test4\nln test3 test5\nln -s test0 test6\ntar -cf exo2.tar *"
+      }
+    },
+    {
+      "id": "ex03",
+      "name": "id_rsa_pub",
+      "type": "shell_manual",
+      "directory": "ex03/",
+      "files": ["id_rsa_pub"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Generate an SSH key pair and submit your public key as 'id_rsa_pub'.",
+      "description_de": "Generiere ein SSH-Schlüsselpaar (ssh-keygen). Lege deinen öffentlichen Schlüssel als Datei 'id_rsa_pub' ab. Wichtig: Public Key = sicher zu teilen, Private Key = NIEMALS teilen.",
+      "why_it_matters": "SSH-Keys sind das Fundament für sichere Verbindungen zu Servern (GitHub, remote Hosts). Im echten 42 brauchst du das für Git-Push.",
+      "example_output": "cat id_rsa_pub\nssh-rsa AAAA... rene@machine",
+      "xp_reward": 15,
+      "learning_links": [
+        {"title": "SSH Key generieren (GitHub)", "url": "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent"},
+        {"title": "ssh-keygen man page", "url": "https://man7.org/linux/man-pages/man1/ssh-keygen.1.html"}
+      ],
+      "hints": {
+        "1_concept": "ssh-keygen -t rsa erzeugt ~/.ssh/id_rsa (privat) und ~/.ssh/id_rsa.pub (öffentlich). Nur der public key darf geteilt werden.",
+        "2_denkanstoß": "ssh-keygen -t rsa -b 4096 -C 'deine@email' → dann cp ~/.ssh/id_rsa.pub ./id_rsa_pub",
+        "3_pseudocode": "ssh-keygen ausführen → public key kopieren",
+        "4_notausgang": "ssh-keygen -t rsa -b 4096 -C 'rene@42'\ncp ~/.ssh/id_rsa.pub ./id_rsa_pub"
+      }
+    },
+    {
+      "id": "ex04",
+      "name": "midLS",
+      "type": "shell",
+      "directory": "ex04/",
+      "files": ["midLS"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "A file 'midLS' containing a command that lists non-hidden files/dirs (no dot-files), separated by ', ', sorted by modification date, dirs ending with '/'.",
+      "description_de": "Erstelle eine Datei 'midLS' mit einem einzeiligen Befehl, der alle nicht-versteckten Dateien und Verzeichnisse im aktuellen Ordner ausgibt – nach Änderungsdatum sortiert, komma-getrennt, Verzeichnisse mit '/' am Ende.",
+      "why_it_matters": "ls-Flags, find, sed/awk-Grundlagen. Die Fähigkeit, Ausgaben zu transformieren ist in Shell-Scripting fundamental.",
+      "example_output": "file1, dir2/, file3",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "ls man page", "url": "https://man7.org/linux/man-pages/man1/ls.1.html"},
+        {"title": "sed Tutorial", "url": "https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/"}
+      ],
+      "hints": {
+        "1_concept": "ls -t sortiert nach Änderungsdatum (neueste zuerst). ls -p fügt '/' nach Verzeichnissen ein. Hidden files (.) mit --ignore='.*' oder grep -v ausschließen.",
+        "2_denkanstoß": "ls -tp --ignore='.*' gibt Dateien mit / für Dirs und ohne Dots aus. Dann mit tr/paste auf eine Zeile mit ', ' verbinden.",
+        "3_pseudocode": "ls -tp --ignore='.*' | tr '\\n' ',' | sed 's/,/, /g' | sed 's/, $//'",
+        "4_notausgang": "ls -tp --ignore='.*' | tr '\\n' ',' | sed 's/,/, /g; s/, $//'"
+      }
+    },
+    {
+      "id": "ex05",
+      "name": "git_commit.sh",
+      "type": "shell",
+      "directory": "ex05/",
+      "files": ["git_commit.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "A shell script that displays the IDs of the last 5 git commits of your repository.",
+      "description_de": "Schreibe ein Shell-Skript git_commit.sh, das die SHA-1-Hashes der letzten 5 Git-Commits ausgibt (einer pro Zeile).",
+      "why_it_matters": "git log ist eines der wichtigsten Git-Werkzeuge. --format/--pretty erlaubt präzise Ausgabe-Kontrolle.",
+      "example_output": "baa23b54f0adb7bf42623d6d0a6ed4587e11412a\n2f52d74b1387fa80eea844969e8dc5483b531ac1\n...",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "git log Dokumentation", "url": "https://git-scm.com/docs/git-log"},
+        {"title": "git log --format erklärt", "url": "https://www.git-scm.com/docs/pretty-formats"}
+      ],
+      "hints": {
+        "1_concept": "git log gibt Commit-Geschichte aus. Mit --format='%H' bekommst du nur den Hash. Mit -5 limitierst du auf 5 Commits.",
+        "2_denkanstoß": "git log -5 --format='%H' – das war's schon fast.",
+        "3_pseudocode": "#!/bin/sh\ngit log -5 --format='%H'",
+        "4_notausgang": "#!/bin/sh\ngit log -5 --format='%H'"
+      }
+    },
+    {
+      "id": "ex06",
+      "name": "git_ignore.sh",
+      "type": "shell",
+      "directory": "ex06/",
+      "files": ["git_ignore.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "A shell script that lists all files currently ignored by the git repository.",
+      "description_de": "Schreibe ein Shell-Skript git_ignore.sh, das alle Dateien auflistet, die vom Git-Repository ignoriert werden (via .gitignore).",
+      "why_it_matters": ".gitignore ist wichtig um Build-Artefakte, Passwörter und OS-Dateien aus dem Repo fernzuhalten.",
+      "example_output": ".DS_Store\nmywork.c~",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "git check-ignore", "url": "https://git-scm.com/docs/git-check-ignore"},
+        {"title": ".gitignore erklärt", "url": "https://www.atlassian.com/git/tutorials/saving-changes/gitignore"}
+      ],
+      "hints": {
+        "1_concept": "git hat einen Befehl zum Prüfen welche Dateien ignoriert werden: git ls-files oder git check-ignore.",
+        "2_denkanstoß": "git ls-files --others --ignored --exclude-standard listet ignorierte Dateien auf.",
+        "3_pseudocode": "#!/bin/sh\ngit ls-files --others --ignored --exclude-standard",
+        "4_notausgang": "#!/bin/sh\ngit ls-files --others --ignored --exclude-standard"
+      }
+    },
+    {
+      "id": "ex07",
+      "name": "b",
+      "type": "shell_manual",
+      "directory": "ex07/",
+      "files": ["b"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create a file 'b' such that 'diff a b > sw.diff' produces the given patch (transforms a to Star Wars intro).",
+      "description_de": "Erstelle eine Datei 'b', die aus der Datei 'a' (Vorlage laut Subject) durch diff entsteht. Das Subject zeigt den Inhalt von 'a' – b ist eine modifizierte Version davon (diff a b ergibt einen gültigen Patch).",
+      "why_it_matters": "diff und patch sind fundamentale Unix-Tools für Code-Reviews und Versionierung. Git nutzt intern diff.",
+      "example_output": "diff a b > sw.diff – kein Fehler",
+      "xp_reward": 20,
+      "learning_links": [
+        {"title": "diff man page", "url": "https://man7.org/linux/man-pages/man1/diff.1.html"},
+        {"title": "patch man page", "url": "https://man7.org/linux/man-pages/man1/patch.1.html"}
+      ],
+      "hints": {
+        "1_concept": "diff vergleicht zwei Dateien zeilenweise. Du musst eine Datei 'b' erstellen die sich von 'a' (dem Star Wars Text im Subject) unterscheidet. Die genaue Aufgabe: b ist eine veränderte Version von a.",
+        "2_denkanstoß": "Lies das Subject genau: 'a' enthält den STARWARS-Text. Du erstellst 'b' als modifizierte Version. diff a b darf keinen Fehler geben.",
+        "3_pseudocode": "Erstelle erst Datei 'a' mit dem Inhalt aus dem Subject. Dann erstelle 'b' mit Änderungen. diff a b > sw.diff",
+        "4_notausgang": "b kann eine leere Datei sein (komplett anderer Inhalt als a) oder irgendeine gültige Textdatei. diff a b > sw.diff funktioniert mit jeder Datei."
+      }
+    },
+    {
+      "id": "ex08",
+      "name": "clean",
+      "type": "shell",
+      "directory": "ex08/",
+      "files": ["clean"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "A file 'clean' containing ONE command that finds and deletes files ending with '~' or starting AND ending with '#' in the current directory and subdirectories.",
+      "description_de": "Erstelle eine Datei 'clean' mit EINEM Befehl (kein ; oder &&), der alle Dateien im aktuellen Verzeichnis und Unterverzeichnissen findet und löscht, die auf '~' enden oder mit '#' beginnen UND enden.",
+      "why_it_matters": "find ist das mächtigste Unix-Werkzeug zum Durchsuchen von Dateisystemen. -name, -delete, und logische Verknüpfungen (-o, -and) sind essential.",
+      "example_output": "(keine Ausgabe, Dateien gelöscht)",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "find man page", "url": "https://man7.org/linux/man-pages/man1/find.1.html"},
+        {"title": "find -delete Beispiele", "url": "https://www.geeksforgeeks.org/find-command-in-linux-with-examples/"}
+      ],
+      "hints": {
+        "1_concept": "find hat -name für Muster und -delete zum Löschen. Für ODER-Verknüpfung: -o (or). Klammerung mit \\( \\).",
+        "2_denkanstoß": "find . \\( -name '*~' -o -name '#*#' \\) -delete – ein Befehl, keine Semikolons.",
+        "3_pseudocode": "find . \\( Muster1 -o Muster2 \\) -delete",
+        "4_notausgang": "find . \\( -name '*~' -o -name '#*#' \\) -delete"
+      }
+    },
+    {
+      "id": "ex09",
+      "name": "ft_magic",
+      "type": "shell_manual",
+      "directory": "ex09/",
+      "files": ["ft_magic"],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create a magic file 'ft_magic' that detects files of '42' type – files with '42' at the 42nd byte.",
+      "description_de": "Erstelle eine Magic-Datei 'ft_magic', die von 'file -m ft_magic <datei>' als '42 file type' erkannt wird, wenn die Datei an Byte-Position 42 die Zeichenkette '42' enthält.",
+      "why_it_matters": "Der 'file'-Befehl nutzt Magic-Dateien um Dateitypen zu erkennen. Du lernst das Format dieser Dateien – ein tiefer Einblick in Unix-Internals.",
+      "example_output": "file -m ft_magic testfile → testfile: 42 file type",
+      "xp_reward": 35,
+      "learning_links": [
+        {"title": "man magic (5)", "url": "https://man7.org/linux/man-pages/man5/magic.5.html"},
+        {"title": "file command erklärt", "url": "https://www.geeksforgeeks.org/file-command-in-linux-with-examples/"}
+      ],
+      "hints": {
+        "1_concept": "Magic-Dateien haben das Format: <offset> <type> <value> <description>. Offset in Bytes, type 'string', value '42'.",
+        "2_denkanstoß": "42-ter Byte = Offset 42. Format: '42 string 42 42 file type'",
+        "3_pseudocode": "Datei ft_magic mit einer Zeile: '42 string 42 42 file type'",
+        "4_notausgang": "printf '42\\tstring\\t42\\t42 file type\\n' > ft_magic"
+      }
+    }
+  ]
+}

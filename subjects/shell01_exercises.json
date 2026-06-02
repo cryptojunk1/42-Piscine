@@ -1,0 +1,201 @@
+{
+  "module": "Shell01",
+  "label": "Shell 01",
+  "type": "shell",
+  "version": "7.4",
+  "exercises": [
+    {
+      "id": "ex01",
+      "name": "print_groups.sh",
+      "type": "shell",
+      "directory": "ex01/",
+      "files": ["print_groups.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Write a script that displays the groups of the user stored in FT_USER, comma-separated without spaces.",
+      "description_de": "Schreibe ein Shell-Skript, das die Gruppen des Benutzers aus der Umgebungsvariable FT_USER ausgibt – durch Komma getrennt, ohne Leerzeichen.",
+      "why_it_matters": "Umgebungsvariablen sind das Rückgrat der Shell-Konfiguration. id zeigt Benutzer- und Gruppen-Informationen.",
+      "example_output": "FT_USER=daemon → daemon,bin",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "id man page", "url": "https://man7.org/linux/man-pages/man1/id.1.html"},
+        {"title": "Umgebungsvariablen erklärt", "url": "https://www.geeksforgeeks.org/environment-variables-in-linux-unix/"}
+      ],
+      "hints": {
+        "1_concept": "id -Gn $FT_USER gibt die Gruppennamen aus. tr ' ' ',' wandelt Leerzeichen in Kommas um.",
+        "2_denkanstoß": "id -Gn \"$FT_USER\" | tr ' ' ','",
+        "3_pseudocode": "#!/bin/sh\nid -Gn \"$FT_USER\" | tr ' ' ','",
+        "4_notausgang": "#!/bin/sh\nid -Gn \"$FT_USER\" | tr ' ' ','"
+      }
+    },
+    {
+      "id": "ex02",
+      "name": "find_sh.sh",
+      "type": "shell",
+      "directory": "ex02/",
+      "files": ["find_sh.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Find all files ending with '.sh' in current dir and subdirs, display only names without the '.sh' extension.",
+      "description_de": "Schreibe ein Skript, das alle Dateien mit der Endung '.sh' im aktuellen Verzeichnis und allen Unterverzeichnissen findet und die Namen ohne die .sh-Endung ausgibt.",
+      "why_it_matters": "find + basename/sed ist ein klassisches Shell-Muster. Viele Admin-Aufgaben basieren darauf.",
+      "example_output": "find_sh\nfile1\nfile2",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "find man page", "url": "https://man7.org/linux/man-pages/man1/find.1.html"},
+        {"title": "basename man page", "url": "https://man7.org/linux/man-pages/man1/basename.1.html"}
+      ],
+      "hints": {
+        "1_concept": "find . -name '*.sh' findet alle .sh-Dateien. basename entfernt Pfad und optionale Endung.",
+        "2_denkanstoß": "find . -name '*.sh' | while read f; do basename \"$f\" .sh; done",
+        "3_pseudocode": "#!/bin/sh\nfind . -name '*.sh' | while read f; do basename \"$f\" .sh; done",
+        "4_notausgang": "#!/bin/sh\nfind . -name '*.sh' | while read f; do basename \"$f\" .sh; done"
+      }
+    },
+    {
+      "id": "ex03",
+      "name": "count_files.sh",
+      "type": "shell",
+      "directory": "ex03/",
+      "files": ["count_files.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Count and display the total number of regular files AND directories (including '.') in current dir and subdirs.",
+      "description_de": "Zähle und gib die Gesamtanzahl aller regulären Dateien UND Verzeichnisse im aktuellen Verzeichnis und allen Unterverzeichnissen aus (inklusive '.').",
+      "why_it_matters": "find mit -type und wc ist ein fundamentales Pattern für Dateisystem-Analyse.",
+      "example_output": "42",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "find -type erklärt", "url": "https://man7.org/linux/man-pages/man1/find.1.html"},
+        {"title": "wc man page", "url": "https://man7.org/linux/man-pages/man1/wc.1.html"}
+      ],
+      "hints": {
+        "1_concept": "find . -type f zählt Dateien, find . -type d Verzeichnisse. Beide kombinieren und mit wc -l zählen.",
+        "2_denkanstoß": "find . \\( -type f -o -type d \\) | wc -l",
+        "3_pseudocode": "#!/bin/sh\nfind . \\( -type f -o -type d \\) | wc -l",
+        "4_notausgang": "#!/bin/sh\nfind . \\( -type f -o -type d \\) | wc -l"
+      }
+    },
+    {
+      "id": "ex04",
+      "name": "MAC.sh",
+      "type": "shell",
+      "directory": "ex04/",
+      "files": ["MAC.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Display the machine's MAC addresses, one per line.",
+      "description_de": "Schreibe ein Skript, das alle MAC-Adressen der Netzwerk-Interfaces anzeigt, eine pro Zeile.",
+      "why_it_matters": "Netzwerk-Konfiguration ist in System-Administration fundamental. ip/ifconfig sind die wichtigsten Werkzeuge.",
+      "example_output": "aa:bb:cc:dd:ee:ff\n00:11:22:33:44:55",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "ip command", "url": "https://man7.org/linux/man-pages/man8/ip.8.html"},
+        {"title": "ifconfig erklärt", "url": "https://www.geeksforgeeks.org/ifconfig-command-in-linux-with-examples/"}
+      ],
+      "hints": {
+        "1_concept": "ip link show gibt Interface-Infos inkl. MAC. grep 'link/ether' + awk filtert die Adresse heraus.",
+        "2_denkanstoß": "ip link show | grep 'link/ether' | awk '{print $2}'",
+        "3_pseudocode": "#!/bin/sh\nip link show | grep 'link/ether' | awk '{print $2}'",
+        "4_notausgang": "#!/bin/sh\nip link show | grep 'link/ether' | awk '{print $2}'"
+      }
+    },
+    {
+      "id": "ex05",
+      "name": "MaRViN",
+      "type": "shell_manual",
+      "directory": "ex05/",
+      "files": ["\"\\\\?$*'MaRViN'*$?\\\""],
+      "allowed_functions": [],
+      "prototype": "",
+      "description": "Create a file with the exact special-character name: \"\\?$*'MaRViN'*$?\\\" containing only '42'.",
+      "description_de": "Erstelle eine Datei mit dem exakten Sondernamen: \"\\?$*'MaRViN'*$?\\\" – die Datei soll nur '42' enthalten. Teste mit: ls -lRa *MaRV*",
+      "why_it_matters": "Sonderzeichen in Dateinamen zu handeln ist eine wichtige Shell-Fertigkeit. Quoting und Escaping sind fundamental.",
+      "example_output": "-rw---xr-- 1 ... 2 ... \"\\?$*'MaRViN'*$?\\\"",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "Shell Quoting", "url": "https://www.gnu.org/software/bash/manual/html_node/Quoting.html"},
+        {"title": "$'...' Syntax", "url": "https://www.gnu.org/software/bash/manual/html_node/ANSI_002dC-Quoting.html"}
+      ],
+      "hints": {
+        "1_concept": "Sonderzeichen im Dateinamen erfordern $'...' Quoting oder Backslash-Escaping.",
+        "2_denkanstoß": "printf '42' > $'\"\\\\?$*\\'MaRViN\\'*$?\\\"'",
+        "3_pseudocode": "Datei mit printf und $'...' erstellen, dann Berechtigungen setzen",
+        "4_notausgang": "printf '42' > $'\"\\\\?$*\\'MaRViN\\'*$?\\\"'\nchmod 415 $'\"\\\\?$*\\'MaRViN\\'*$?\\\"'"
+      }
+    },
+    {
+      "id": "ex06",
+      "name": "skip.sh",
+      "type": "shell",
+      "directory": "ex06/",
+      "files": ["skip.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Display every other line of 'ls -l' output, starting from the first line.",
+      "description_de": "Schreibe ein Skript, das jede zweite Zeile der ls -l Ausgabe ausgibt, beginnend mit der ersten Zeile (also Zeilen 1, 3, 5, ...).",
+      "why_it_matters": "awk, sed und andere Text-Filter sind essentielle Unix-Werkzeuge.",
+      "example_output": "Zeilen 1, 3, 5, ... von ls -l",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "awk Tutorial", "url": "https://www.geeksforgeeks.org/awk-command-unixlinux-examples/"},
+        {"title": "sed -n erklärt", "url": "https://www.geeksforgeeks.org/sed-command-in-linux-unix-with-examples/"}
+      ],
+      "hints": {
+        "1_concept": "awk kann mit NR (Zeilennummer) filtern. NR%2==1 bedeutet ungerade Zeilen (1,3,5,...).",
+        "2_denkanstoß": "ls -l | awk 'NR%2==1'",
+        "3_pseudocode": "#!/bin/sh\nls -l | awk 'NR%2==1'",
+        "4_notausgang": "#!/bin/sh\nls -l | awk 'NR%2==1'"
+      }
+    },
+    {
+      "id": "ex07",
+      "name": "r_dwssap.sh",
+      "type": "shell",
+      "directory": "ex07/",
+      "files": ["r_dwssap.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Complex transformation of /etc/passwd: remove comments, skip every other line from 2nd, reverse each login, sort reverse alphabetically, keep lines FT_LINE1 to FT_LINE2, join with ', ', end with '.'",
+      "description_de": "Komplexe Transformation von /etc/passwd (Umgebungsvariablen FT_LINE1, FT_LINE2): Kommentare entfernen, jede zweite Zeile ab der zweiten überspringen, jeden Login umkehren, alphabetisch rückwärts sortieren, Zeilen FT_LINE1 bis FT_LINE2, durch ', ' verbinden, mit '.' enden.",
+      "why_it_matters": "Kombiniert grep, awk, sed, rev, sort, head/tail – repräsentiert fortgeschrittenes Unix-Pipelining.",
+      "example_output": "sstq_, sorebrek_brk_, ...\n.",
+      "xp_reward": 60,
+      "learning_links": [
+        {"title": "rev command", "url": "https://man7.org/linux/man-pages/man1/rev.1.html"},
+        {"title": "cut command", "url": "https://man7.org/linux/man-pages/man1/cut.1.html"},
+        {"title": "awk Tutorial", "url": "https://www.geeksforgeeks.org/awk-command-unixlinux-examples/"}
+      ],
+      "hints": {
+        "1_concept": "Pipeline-Schritte in Reihenfolge: 1) grep -v '^#' entfernt Kommentare 2) awk 'NR%2==1' jede zweite überspringen 3) cut -d: -f1 nur Logins 4) rev kehrt um 5) sort -r 6) sed -n FT_LINE1,FT_LINE2p 7) tr '\\n' ',' + Formatierung",
+        "2_denkanstoß": "grep -v '^#' /etc/passwd | awk 'NR%2==1' | cut -d: -f1 | rev | sort -r | sed -n \"${FT_LINE1},${FT_LINE2}p\" | tr '\\n' ',' | sed 's/,/, /g; s/, $/\\n./'",
+        "3_pseudocode": "Schrittweise Pipeline aufbauen und mit cat -e testen",
+        "4_notausgang": "#!/bin/sh\ngrep -v '^#' /etc/passwd | awk 'NR%2==1' | cut -d: -f1 | rev | sort -r | sed -n \"${FT_LINE1},${FT_LINE2}p\" | tr '\\n' ',' | sed 's/,/, /g; s/, *$//'\necho '.'"
+      }
+    },
+    {
+      "id": "ex08",
+      "name": "add_chelou.sh",
+      "type": "shell_manual",
+      "directory": "ex08/",
+      "files": ["add_chelou.sh"],
+      "allowed_functions": [],
+      "prototype": "#!/bin/sh",
+      "description": "Convert FT_NBR1 (in '\"?! base) and FT_NBR2 (in mrdoc base) and display their sum in gtaio luSnemf base.",
+      "description_de": "Konvertiere FT_NBR1 (in '\"?!-Basis) und FT_NBR2 (in mrdoc-Basis) und gib die Summe in der gtaio luSnemf-Basis aus. Sehr knifflige Basis-Konvertierung.",
+      "why_it_matters": "Zahlenbasen-Konvertierung in Shell – fortgeschrittene arithmetische Shell-Programmierung.",
+      "example_output": "FT_NBR1=\\'?\"\\\"'\\\\\\nFT_NBR2=rcrdmddd → Salut",
+      "xp_reward": 60,
+      "learning_links": [
+        {"title": "Shell Arithmetic", "url": "https://www.gnu.org/software/bash/manual/html_node/Shell-Arithmetic.html"},
+        {"title": "bc command", "url": "https://man7.org/linux/man-pages/man1/bc.1.html"}
+      ],
+      "hints": {
+        "1_concept": "Basis '\"?! hat 4 Zeichen. Basis mrdoc hat 5 Zeichen. Basis 'gtaio luSnemf' hat 13 Zeichen. Jede Stelle = Wert × Basis^Position.",
+        "2_denkanstoß": "Erst: Welchen Dezimalwert hat jede Ziffer in der jeweiligen Basis? Dann: Beide addieren. Dann: in Ziel-Basis konvertieren.",
+        "3_pseudocode": "Funktion: from_base(zahl, alphabet) → decimal. Funktion: to_base(decimal, alphabet) → zahl. Ergebnis = to_base(from_base(FT_NBR1, base1) + from_base(FT_NBR2, base2), base3)",
+        "4_notausgang": "#!/bin/sh\n# Zu komplex für Notausgang – baue die Konvertierungsfunktionen schrittweise auf"
+      }
+    }
+  ]
+}

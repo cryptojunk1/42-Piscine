@@ -1,73 +1,94 @@
 #!/bin/bash
 # =============================================================================
-# 42 Lerntool – new.sh
-# Legt Übungsverzeichnis + .c-Template an
-# Usage: bash scripts/new.sh <exercise_name>
-#   z.B.: bash scripts/new.sh ft_print_reverse_alphabet
+# 42 Lerntool – new.sh  (generisch, Multi-Modul)
+# Legt Übungsverzeichnis + Datei(en) mit 42-Header an
+# Usage: bash scripts/new.sh <MODULE> <exercise_name|ex_id>
+#   z.B.: bash scripts/new.sh C00 ft_putchar
+#         bash scripts/new.sh C00 ex00
+#         bash scripts/new.sh Shell00 ex04
 # =============================================================================
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TOOL_ROOT="$(dirname "$SCRIPT_DIR")"
-PEER_DIR="$TOOL_ROOT/peer"
 
 GREEN='\033[0;32m'; CYAN='\033[0;36m'; YELLOW='\033[1;33m'; BOLD='\033[1m'; RESET='\033[0m'
 
-EX_NAME="${1:-}"
-if [ -z "$EX_NAME" ]; then
-  echo "Usage: bash scripts/new.sh <exercise_name>"
-  echo "Beispiel: bash scripts/new.sh ft_print_reverse_alphabet"
+# ─── Argumente ───────────────────────────────────────────────────────────────
+if [ $# -lt 2 ]; then
+  echo "Usage: bash scripts/new.sh <MODULE> <exercise_name|ex_id>"
+  echo "  Beispiele: bash scripts/new.sh C00 ft_putchar"
+  echo "             bash scripts/new.sh Shell00 ex04"
   exit 1
 fi
 
-# Lookup: Prototyp + erlaubte Funktionen aus JSON
-PROTO=$(python3 -c "
-import json
-ex = json.load(open('$TOOL_ROOT/subjects/c00_exercises.json'))
-for e in ex['exercises']:
-    if e['name'] == '$EX_NAME':
-        print(e['prototype'].rstrip().rstrip(';'))
-        break
-" 2>/dev/null)
+MODULE="$1"
+ARG="$2"
 
-ALLOWED=$(python3 -c "
-import json
-ex = json.load(open('$TOOL_ROOT/subjects/c00_exercises.json'))
-for e in ex['exercises']:
-    if e['name'] == '$EX_NAME':
-        print(', '.join(e['allowed_functions']))
-        break
-" 2>/dev/null)
-
-DESC=$(python3 -c "
-import json
-ex = json.load(open('$TOOL_ROOT/subjects/c00_exercises.json'))
-for e in ex['exercises']:
-    if e['name'] == '$EX_NAME':
-        print(e['description'])
-        break
-" 2>/dev/null)
-
-EX_DIR="$PEER_DIR/$EX_NAME"
-C_FILE="$EX_DIR/${EX_NAME}.c"
-
-mkdir -p "$EX_DIR"
-
-if [ -f "$C_FILE" ]; then
-  echo -e "${YELLOW}Datei existiert bereits: $C_FILE${RESET}"
-  echo -e "Direkt editieren, dann: ${CYAN}bash scripts/check.sh $EX_NAME${RESET}"
-  exit 0
+# ─── Modul-JSON laden ────────────────────────────────────────────────────────
+MODULE_LOWER=$(echo "$MODULE" | tr '[:upper:]' '[:lower:]')
+JSON_FILE="$TOOL_ROOT/subjects/${MODULE_LOWER}_exercises.json"
+if [ ! -f "$JSON_FILE" ]; then
+  echo -e "${YELLOW}Kein Subject-JSON für '$MODULE': $JSON_FILE${RESET}"
+  exit 1
 fi
 
-# Heutiges Datum
+# ─── Übung auflösen ──────────────────────────────────────────────────────────
+EX_JSON=$(python3 -c "
+import json, sys
+data = json.load(open('$JSON_FILE', encoding='utf-8'))
+arg = '$ARG'.lower()
+for ex in data['exercises']:
+    if ex['id'].lower() == arg or ex['name'].lower() == arg:
+        print(json.dumps(ex))
+        sys.exit(0)
+sys.exit(1)
+" 2>/dev/null)
+
+if [ -z "$EX_JSON" ]; then
+  echo -e "${YELLOW}Unbekannte Übung: '$ARG' in $MODULE${RESET}"
+  python3 -c "
+import json
+d = json.load(open('$JSON_FILE', encoding='utf-8'))
+for e in d['exercises']:
+    print(f\"  {e['id']}  {e['name']}\")
+"
+  exit 1
+fi
+
+EX_ID=$(    echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e['id'])")
+EX_NAME=$(  echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e['name'])")
+EX_TYPE=$(  echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e.get('type','c'))")
+EX_DIR=$(   echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e.get('directory','').rstrip('/'))")
+EX_FILES=$( echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(' '.join(e.get('files',[])))")
+EX_PROTO=$( echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e.get('prototype',''))" 2>/dev/null || echo "")
+EX_ALLOWED=$(echo "$EX_JSON"| python3 -c "import json,sys; e=json.load(sys.stdin); print(', '.join(e.get('allowed_functions',[])))" 2>/dev/null || echo "")
+EX_DESC=$(  echo "$EX_JSON" | python3 -c "import json,sys; e=json.load(sys.stdin); print(e.get('description_de') or e.get('description',''))" 2>/dev/null || echo "")
+
+PEER_DIR="$TOOL_ROOT/peer/$MODULE/$EX_DIR"
+mkdir -p "$PEER_DIR"
+
 NOW=$(date +"%Y/%m/%d %H:%M:%S")
 YEAR=$(date +"%Y")
+CREATED=0
 
-# 42-Header + leere Funktion schreiben
-cat > "$C_FILE" << TEMPLATE
+for FILE in $EX_FILES; do
+  DEST="$PEER_DIR/$FILE"
+  if [ -f "$DEST" ]; then
+    echo -e "${YELLOW}Existiert bereits: $DEST${RESET}"
+    continue
+  fi
+
+  # Datei-Typ bestimmen
+  EXT="${FILE##*.}"
+
+  if [ "$EXT" = "c" ] || [ "$EXT" = "h" ]; then
+    # C-Datei: 42-Header + leere Funktion
+    PROTO_CLEAN=$(echo "$EX_PROTO" | sed 's/;$//')
+    FNAME_PAD=$(printf "%-51s" "$FILE")
+    cat > "$DEST" << TEMPLATE
 /* ************************************************************************** */
 /*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ${EX_NAME}.c$(printf '%*s' $((53 - ${#EX_NAME} - 2)) ''):+:      :+:    :+:   */
+/*   ${FNAME_PAD}:+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rene <rene@42.fr>                          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -78,24 +99,42 @@ cat > "$C_FILE" << TEMPLATE
 
 #include <unistd.h>
 
-/* ${DESC} */
-/* Erlaubt: ${ALLOWED} */
-
-${PROTO}
+${PROTO_CLEAN}
 {
 	/* TODO */
 }
 TEMPLATE
 
-echo -e "\n${GREEN}${BOLD}✓ Datei angelegt:${RESET} ${CYAN}$C_FILE${RESET}"
+  elif [ "$EXT" = "sh" ]; then
+    # Shell-Skript: Shebang + Kommentar
+    cat > "$DEST" << TEMPLATE
+#!/bin/sh
+# $FILE – $MODULE $EX_ID
+# $EX_DESC
+
+# TODO
+TEMPLATE
+    chmod +x "$DEST"
+
+  else
+    # Andere Dateitypen (z.B. leere Datei für Shell00 ex00 'z')
+    touch "$DEST"
+  fi
+
+  echo -e "${GREEN}${BOLD}✓${RESET} Angelegt: ${CYAN}$DEST${RESET}"
+  CREATED=$((CREATED + 1))
+done
+
 echo ""
-echo -e "${BOLD}Aufgabe:${RESET} $DESC"
-echo -e "${BOLD}Prototyp:${RESET} $PROTO"
-echo -e "${BOLD}Erlaubt:${RESET}  $ALLOWED"
-echo ""
-echo -e "Nächste Schritte:"
-echo -e "  1. Datei editieren:  ${CYAN}nano $C_FILE${RESET}"
-echo -e "                 oder: ${CYAN}code $C_FILE${RESET}  (falls VS Code installiert)"
-echo -e "  2. Testen:           ${CYAN}bash scripts/check.sh $EX_NAME${RESET}"
-echo -e "  3. Bestanden?        ${CYAN}bash scripts/update_progress.sh $EX_NAME <score>${RESET}"
+if [ "$CREATED" -eq 0 ]; then
+  echo -e "Alle Dateien existieren bereits. Direkt editieren:"
+else
+  echo -e "${BOLD}Aufgabe:${RESET}  $EX_DESC"
+  [ -n "$EX_PROTO"   ] && echo -e "${BOLD}Prototyp:${RESET} $EX_PROTO"
+  [ -n "$EX_ALLOWED" ] && echo -e "${BOLD}Erlaubt:${RESET}  $EX_ALLOWED"
+  echo ""
+  echo -e "Nächste Schritte:"
+fi
+echo -e "  Editieren: ${CYAN}nano $PEER_DIR/$(echo "$EX_FILES" | cut -d' ' -f1)${RESET}"
+echo -e "  Prüfen:    ${CYAN}bash $SCRIPT_DIR/check.sh $MODULE $EX_ID${RESET}"
 echo ""

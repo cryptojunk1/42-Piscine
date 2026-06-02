@@ -1,0 +1,192 @@
+{
+  "module": "C01",
+  "label": "C 01",
+  "type": "c",
+  "version": "5.4",
+  "exercises": [
+    {
+      "id": "ex00", "name": "ft_ft", "type": "c",
+      "directory": "ex00/", "files": ["ft_ft.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_ft(int *nbr);",
+      "description": "Create a function that takes a pointer to int and sets the value 42 to that int.",
+      "description_de": "Schreibe eine Funktion, die einen Pointer auf int bekommt und den Wert 42 in diese Zahl schreibt. Dein erster echter Pointer!",
+      "why_it_matters": "Pointer sind DAS Kernkonzept von C. Alles andere – Arrays, Strings, dynamischer Speicher – baut darauf auf.",
+      "example_output": "*nbr = 42",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "Pointer in C erklärt", "url": "https://www.geeksforgeeks.org/pointers-in-c-and-c-set-1-introduction-arithmetic-and-array/"},
+        {"title": "Dereferencierung", "url": "https://en.wikipedia.org/wiki/Dereference_operator"}
+      ],
+      "hints": {
+        "1_concept": "Ein Pointer *nbr enthält eine Adresse. Mit *nbr = 42 schreibst du 42 an diese Adresse.",
+        "2_denkanstoß": "Der Operator * vor einem Pointer-Namen bedeutet 'geh zur Adresse und schreibe/lese den Wert dort'.",
+        "3_pseudocode": "function ft_ft(pointer nbr):\n    *nbr = 42",
+        "4_notausgang": "void ft_ft(int *nbr)\n{\n    *nbr = 42;\n}"
+      }
+    },
+    {
+      "id": "ex01", "name": "ft_ultimate_ft", "type": "c",
+      "directory": "ex01/", "files": ["ft_ultimate_ft.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_ultimate_ft(int *********nbr);",
+      "description": "A function that takes a pointer to pointer to ... (9 levels deep) to int and sets 42.",
+      "description_de": "Wie ft_ft, aber mit NEUN Ebenen von Pointern. *********nbr = 42. Klingt wild, Prinzip bleibt gleich.",
+      "why_it_matters": "Mehrfach-Pointer kommen in der Praxis vor (z.B. char **argv). Das Prinzip zu verstehen ist wichtiger als die Anzahl der Sterne.",
+      "example_output": "**********nbr = 42",
+      "xp_reward": 20,
+      "learning_links": [
+        {"title": "Pointer auf Pointer", "url": "https://www.geeksforgeeks.org/double-pointer-pointer-pointer-c/"}
+      ],
+      "hints": {
+        "1_concept": "Jedes * ist eine Dereferenzierungs-Ebene. Mit 9 Sternen beim Parameter brauchst du 9 Mal * beim Setzen.",
+        "2_denkanstoß": "*********nbr = 42 – genau 9 Sterne vor nbr beim Schreiben.",
+        "3_pseudocode": "function ft_ultimate_ft(9xPointer nbr):\n    *[9x] nbr = 42",
+        "4_notausgang": "void ft_ultimate_ft(int *********nbr)\n{\n    *********nbr = 42;\n}"
+      }
+    },
+    {
+      "id": "ex02", "name": "ft_swap", "type": "c",
+      "directory": "ex02/", "files": ["ft_swap.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_swap(int *a, int *b);",
+      "description": "Swap the values of two integers whose addresses are passed as parameters.",
+      "description_de": "Schreibe eine Funktion, die die Werte zweier Integers tauscht, indem sie deren Adressen entgegennimmt.",
+      "why_it_matters": "Tauschen via Pointer ist ein Klassiker. Zeigt warum Pointer nötig sind – ohne Pointer kann eine Funktion den Wert nicht wirklich ändern.",
+      "example_output": "a=3,b=7 → a=7,b=3",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "Swap-Funktion erklärt", "url": "https://www.geeksforgeeks.org/c-program-swap-two-numbers/"}
+      ],
+      "hints": {
+        "1_concept": "Tauschen braucht eine temporäre Variable: tmp = *a; *a = *b; *b = tmp.",
+        "2_denkanstoß": "Was passiert wenn du kein tmp benutzt? *a = *b überschreibt den alten Wert von *a unwiderruflich.",
+        "3_pseudocode": "tmp = *a\n*a = *b\n*b = tmp",
+        "4_notausgang": "void ft_swap(int *a, int *b)\n{\n    int tmp;\n    tmp = *a;\n    *a = *b;\n    *b = tmp;\n}"
+      }
+    },
+    {
+      "id": "ex03", "name": "ft_div_mod", "type": "c",
+      "directory": "ex03/", "files": ["ft_div_mod.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_div_mod(int a, int b, int *div, int *mod);",
+      "description": "Divide a by b, store result in *div, store remainder in *mod.",
+      "description_de": "Teile a durch b. Ergebnis in *div, Rest in *mod. Beide Pointer zum Zurückgeben mehrerer Werte aus einer Funktion.",
+      "why_it_matters": "Pointer als 'Ausgabe-Parameter' – eine Funktion kann so mehrere Ergebnisse zurückgeben. In C ohne Pointer nicht möglich.",
+      "example_output": "ft_div_mod(10, 3, &d, &m) → d=3, m=1",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "Integer Division in C", "url": "https://www.geeksforgeeks.org/division-in-c/"}
+      ],
+      "hints": {
+        "1_concept": "In C: a/b = ganzzahlige Division (Rest wird verworfen). a%b = Rest. Beide in die Pointer-Ziele schreiben.",
+        "2_denkanstoß": "*div = a / b; *mod = a % b;",
+        "3_pseudocode": "*div = a / b\n*mod = a % b",
+        "4_notausgang": "void ft_div_mod(int a, int b, int *div, int *mod)\n{\n    *div = a / b;\n    *mod = a % b;\n}"
+      }
+    },
+    {
+      "id": "ex04", "name": "ft_ultimate_div_mod", "type": "c",
+      "directory": "ex04/", "files": ["ft_ultimate_div_mod.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_ultimate_div_mod(int *a, int *b);",
+      "description": "Divide *a by *b, store division result in *a and remainder in *b (in-place).",
+      "description_de": "Wie ft_div_mod, aber diesmal sind a und b selbst Pointer. Division *a/*b – Ergebnis in *a, Rest in *b. Achtung: Reihenfolge beim Schreiben beachten!",
+      "why_it_matters": "In-place Operationen mit Pointern sind ein häufiges C-Pattern. Die Reihenfolge der Zuweisungen ist kritisch.",
+      "example_output": "a=10,b=3 → a=3,b=1",
+      "xp_reward": 35,
+      "learning_links": [
+        {"title": "In-place swap Problem", "url": "https://www.geeksforgeeks.org/swap-two-numbers-without-using-temporary-variable/"}
+      ],
+      "hints": {
+        "1_concept": "Denke an die Reihenfolge: Du musst die originalen Werte von *a und *b kennen bevor du eines überschreibst.",
+        "2_denkanstoß": "Erst tmp = *a / *b berechnen, dann *b = *a % *b, dann *a = tmp.",
+        "3_pseudocode": "tmp = *a / *b\n*b = *a % *b\n*a = tmp",
+        "4_notausgang": "void ft_ultimate_div_mod(int *a, int *b)\n{\n    int tmp;\n    tmp = *a / *b;\n    *b = *a % *b;\n    *a = tmp;\n}"
+      }
+    },
+    {
+      "id": "ex05", "name": "ft_putstr", "type": "c",
+      "directory": "ex05/", "files": ["ft_putstr.c"],
+      "allowed_functions": ["write"],
+      "prototype": "void ft_putstr(char *str);",
+      "description": "Display a string on standard output using write.",
+      "description_de": "Schreibe eine Funktion, die einen String auf stdout ausgibt. Kein printf – nur write(). Du musst durch den String iterieren.",
+      "why_it_matters": "String-Iteration mit Pointern – hier lernst du wie Strings in C wirklich funktionieren: nullterminiertes char-Array.",
+      "example_output": "ft_putstr(\"Hello\") → Hello",
+      "xp_reward": 30,
+      "learning_links": [
+        {"title": "Strings in C", "url": "https://www.geeksforgeeks.org/strings-in-c/"},
+        {"title": "Null Terminator", "url": "https://en.wikipedia.org/wiki/Null-terminated_string"}
+      ],
+      "hints": {
+        "1_concept": "Ein C-String ist ein char-Array das mit '\\0' endet. write(1, &str[i], 1) schreibt ein Zeichen. Loop bis '\\0'.",
+        "2_denkanstoß": "Wie bestimmst du die Länge des Strings? Mit einer while-Schleife bis str[i] == '\\0'.",
+        "3_pseudocode": "i = 0\nwhile str[i] != 0:\n    write(1, str+i, 1)\n    i++",
+        "4_notausgang": "#include <unistd.h>\nvoid ft_putstr(char *str)\n{\n    int i;\n    i = 0;\n    while (str[i])\n        write(1, &str[i++], 1);\n}"
+      }
+    },
+    {
+      "id": "ex06", "name": "ft_strlen", "type": "c",
+      "directory": "ex06/", "files": ["ft_strlen.c"],
+      "allowed_functions": [],
+      "prototype": "int ft_strlen(char *str);",
+      "description": "Count and return the number of characters in a string (without counting the null terminator).",
+      "description_de": "Zähle und gib die Anzahl der Zeichen in einem String zurück (ohne den Null-Terminator '\\0' zu zählen).",
+      "why_it_matters": "strlen ist eine der am häufigsten genutzten C-Funktionen. Den Null-Terminator zu verstehen ist fundamental für alle String-Operationen.",
+      "example_output": "ft_strlen(\"Hello\") → 5",
+      "xp_reward": 25,
+      "learning_links": [
+        {"title": "strlen Implementierung", "url": "https://www.geeksforgeeks.org/c-program-to-find-length-of-string-without-using-strlen-function/"}
+      ],
+      "hints": {
+        "1_concept": "Iteriere durch str bis du '\\0' (Null-Byte) triffst. Zähle jeden Schritt. Gib den Zähler zurück.",
+        "2_denkanstoß": "int i = 0; while (str[i]) i++; return i;",
+        "3_pseudocode": "i = 0\nwhile str[i] != '\\0':\n    i++\nreturn i",
+        "4_notausgang": "int ft_strlen(char *str)\n{\n    int i;\n    i = 0;\n    while (str[i])\n        i++;\n    return (i);\n}"
+      }
+    },
+    {
+      "id": "ex07", "name": "ft_rev_int_tab", "type": "c",
+      "directory": "ex07/", "files": ["ft_rev_int_tab.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_rev_int_tab(int *tab, int size);",
+      "description": "Reverse an array of integers in-place.",
+      "description_de": "Kehre ein Integer-Array in-place um (erstes wird letztes, etc.). Kein extra Array anlegen.",
+      "why_it_matters": "Array-Manipulation mit Pointern. Der Zwei-Pointer-Ansatz (von vorne und hinten gleichzeitig) ist ein fundamentales Algorithmen-Pattern.",
+      "example_output": "{1,2,3,4,5} → {5,4,3,2,1}",
+      "xp_reward": 40,
+      "learning_links": [
+        {"title": "Arrays in C", "url": "https://www.geeksforgeeks.org/arrays-in-c-cpp/"},
+        {"title": "Array Reverse Algorithmus", "url": "https://www.geeksforgeeks.org/write-a-program-to-reverse-an-array-or-string/"}
+      ],
+      "hints": {
+        "1_concept": "Tausche tab[0] mit tab[size-1], tab[1] mit tab[size-2], usw. Bis zur Mitte des Arrays.",
+        "2_denkanstoß": "Two-pointer: i=0, j=size-1. Solange i<j: tausche tab[i] und tab[j], i++, j--.",
+        "3_pseudocode": "i = 0; j = size-1\nwhile i < j:\n    swap(tab[i], tab[j])\n    i++; j--",
+        "4_notausgang": "void ft_rev_int_tab(int *tab, int size)\n{\n    int i; int j; int tmp;\n    i = 0; j = size - 1;\n    while (i < j) {\n        tmp = tab[i];\n        tab[i] = tab[j];\n        tab[j] = tmp;\n        i++; j--;\n    }\n}"
+      }
+    },
+    {
+      "id": "ex08", "name": "ft_sort_int_tab", "type": "c",
+      "directory": "ex08/", "files": ["ft_sort_int_tab.c"],
+      "allowed_functions": [],
+      "prototype": "void ft_sort_int_tab(int *tab, int size);",
+      "description": "Sort an array of integers in ascending order.",
+      "description_de": "Sortiere ein Integer-Array aufsteigend. Wähle einen Algorithmus (Bubble Sort ist am einfachsten zu implementieren).",
+      "why_it_matters": "Sortier-Algorithmen sind das klassische Intro zu Algorithmen. Bubble Sort ist O(n²) aber einfach zu verstehen und implementieren.",
+      "example_output": "{5,2,8,1,3} → {1,2,3,5,8}",
+      "xp_reward": 50,
+      "learning_links": [
+        {"title": "Bubble Sort erklärt", "url": "https://www.geeksforgeeks.org/bubble-sort/"},
+        {"title": "Sortier-Algorithmen Vergleich", "url": "https://www.geeksforgeeks.org/comparison-among-bubble-sort-selection-sort-and-insertion-sort/"}
+      ],
+      "hints": {
+        "1_concept": "Bubble Sort: Vergleiche benachbarte Elemente, tausche wenn falsch geordnet. Wiederhole bis keine Tausche mehr nötig.",
+        "2_denkanstoß": "Äußere Schleife: n-1 Durchgänge. Innere Schleife: Vergleiche tab[j] mit tab[j+1]. Bei tab[j] > tab[j+1]: tauschen.",
+        "3_pseudocode": "for i in 0..size-1:\n    for j in 0..size-2:\n        if tab[j] > tab[j+1]:\n            swap(tab[j], tab[j+1])",
+        "4_notausgang": "void ft_sort_int_tab(int *tab, int size)\n{\n    int i; int j; int tmp;\n    i = 0;\n    while (i < size - 1) {\n        j = 0;\n        while (j < size - 1 - i) {\n            if (tab[j] > tab[j + 1]) {\n                tmp = tab[j]; tab[j] = tab[j+1]; tab[j+1] = tmp;\n            }\n            j++;\n        }\n        i++;\n    }\n}"
+      }
+    }
+  ]
+}

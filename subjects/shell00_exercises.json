@@ -63,17 +63,17 @@
       "description": "Create the specified file/directory structure with exact permissions, then pack as exo2.tar.",
       "description_de": "Erstelle die vorgegebene Datei-/Verzeichnisstruktur mit exakten Berechtigungen (test0 bis test6) und verpacke sie mit: tar -cf exo2.tar *",
       "why_it_matters": "Komplexere Dateiberechtigungen: Directories, Symlinks, Hard Links. ln für Hard Links, ln -s für Symlinks.",
-      "example_output": "ls -l\ndrwx--xr-x test0\n-rwx--xr-- test1\ndr-x---r-- test2\n...",
+      "example_output": "$ ls -l\ntotal 0\ndrwx--xr-x 2 XX XX 6 Jun  1 23:47 test0\n-rwx--xr-- 1 XX XX 0 Jun  1 23:47 test1\ndr-x---r-- 2 XX XX 6 Jun  1 23:47 test2\n-r--r----x 2 XX XX 0 Jun  1 23:47 test3\n--w-r----- 1 XX XX 0 Jun  1 23:47 test4\n-r--r----x 2 XX XX 0 Jun  1 23:47 test5\nlrwxrwxrwx 1 XX XX 5 Jun  1 23:47 test6 -> test0",
       "xp_reward": 25,
       "learning_links": [
         {"title": "ln (hard links)", "url": "https://man7.org/linux/man-pages/man1/ln.1.html"},
         {"title": "Symlinks erklärt", "url": "https://www.geeksforgeeks.org/soft-hard-links-unixlinux/"}
       ],
       "hints": {
-        "1_concept": "test6 -> test0 ist ein Symlink (lrwxrwxrwx). test3 und test5 haben denselben Inode (Hard Link). Directories brauchen mkdir, Files touch.",
-        "2_denkanstoß": "mkdir test0; chmod 713 test0. touch test1; chmod 741 test1. mkdir test2; chmod 504 test2. Für Hard Link: touch test3; ln test3 test5. Symlink: ln -s test0 test6",
+        "1_concept": "test6 -> test0 ist ein Symlink (lrwxrwxrwx). test3 und test5 haben denselben Inode (Hard Link) – erkennbar an Link-Anzahl 2. Directories brauchen mkdir, Files touch.",
+        "2_denkanstoß": "mkdir test0; chmod 715 test0. touch test1; chmod 714 test1. mkdir test2; chmod 504 test2. Für Hard Link: touch test3; ln test3 test5. Für Symlink: ln -s test0 test6",
         "3_pseudocode": "mkdir + chmod für jedes Verzeichnis. touch + chmod für jede Datei. ln für Hard Links. ln -s für Symlinks. Dann tar.",
-        "4_notausgang": "mkdir test0; chmod 713 test0\ntouch test1; chmod 741 test1\nmkdir test2; chmod 504 test2\ntouch test3; chmod 404 test3\ntouch test4; chmod 601 test4\nln test3 test5\nln -s test0 test6\ntar -cf exo2.tar *"
+        "4_notausgang": "mkdir test0; chmod 715 test0\ntouch test1; chmod 714 test1\nmkdir test2; chmod 504 test2\ntouch test3; chmod 441 test3\ntouch test4; chmod 240 test4\nln test3 test5\nln -s test0 test6\ntar -cf exo2.tar *"
       }
     },
     {

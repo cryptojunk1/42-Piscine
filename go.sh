@@ -118,31 +118,51 @@ show_subject() {
 exercise_menu() {
   local module="$1" ex_name="$2" ex_id="$3" ex_dir="$4"
   local primary_file="$5"
+  local ex_type="${6:-c}"
   local peer_dir="$PEER/$module/$ex_dir"
 
-  if [ ! -f "$peer_dir/$primary_file" ]; then
-    echo -e "\n${CYAN}Lege $module/$ex_id an ...${RESET}"
-    bash "$SCRIPTS/new.sh" "$module" "$ex_id"
-    echo ""; read -rp "  [Enter] weiter ..." _
+  if [ "$ex_type" = "c" ]; then
+    # C-Aufgaben: Template automatisch anlegen (42-Header, leere Funktion)
+    if [ ! -f "$peer_dir/$primary_file" ]; then
+      echo -e "\n${CYAN}Lege $module/$ex_id an ...${RESET}"
+      bash "$SCRIPTS/new.sh" "$module" "$ex_id"
+      echo ""; read -rp "  [Enter] weiter ..." _
+    fi
+  else
+    # Shell-Aufgaben: NUR Verzeichnis anlegen – Dateien erstellt der Lerner selbst!
+    mkdir -p "$peer_dir"
   fi
 
   while true; do
     clear
     echo -e "\n  ${BOLD}▶ $module / $ex_id – $ex_name${RESET}"
-    echo -e "  ${DIM}$peer_dir/$primary_file${RESET}"
     python3 "$SCRIPTS/_ex_status.py" "$PROGRESS" "$module" "$ex_name" 2>/dev/null || true
-    echo ""
-    echo -e "   ${BOLD}e${RESET}) Editor      ${BOLD}c${RESET}) Prüfen     ${BOLD}h${RESET}) Hinweise"
-    echo -e "   ${BOLD}f${RESET}) Peer fragen ${BOLD}p${RESET}) Aufgabe    ${BOLD}z${RESET}) Zurück"
+
+    if [ "$ex_type" = "c" ]; then
+      echo -e "  ${DIM}$peer_dir/$primary_file${RESET}"
+      echo ""
+      echo -e "   ${BOLD}e${RESET}) Editor      ${BOLD}c${RESET}) Prüfen     ${BOLD}h${RESET}) Hinweise"
+      echo -e "   ${BOLD}f${RESET}) Peer fragen ${BOLD}p${RESET}) Aufgabe    ${BOLD}z${RESET}) Zurück"
+    else
+      # Shell: Verzeichnis zeigen, kein Auto-Editor
+      echo -e "\n  ${CYAN}Arbeitsverzeichnis:${RESET}"
+      echo -e "  ${BOLD}cd $peer_dir${RESET}"
+      echo -e "  ${DIM}(Navigiere selbst hin und erstelle deine Datei(en) – das ist Teil der Aufgabe!)${RESET}"
+      echo ""
+      echo -e "   ${BOLD}c${RESET}) Prüfen     ${BOLD}h${RESET}) Hinweise    ${BOLD}p${RESET}) Aufgabe lesen"
+      echo -e "   ${BOLD}f${RESET}) Peer fragen                     ${BOLD}z${RESET}) Zurück"
+    fi
     echo ""
     read -rp "  > " act
     case "$act" in
       e|E)
-        local ed; ed="$(pick_editor)"
-        if [ "$ed" = "code" ]; then
-          "$ed" "$peer_dir/$primary_file" >/dev/null 2>&1 &
-        else
-          "$ed" "$peer_dir/$primary_file"
+        if [ "$ex_type" = "c" ]; then
+          local ed; ed="$(pick_editor)"
+          if [ "$ed" = "code" ]; then
+            "$ed" "$peer_dir/$primary_file" >/dev/null 2>&1 &
+          else
+            "$ed" "$peer_dir/$primary_file"
+          fi
         fi
         ;;
       c|C)
@@ -168,6 +188,7 @@ module_menu() {
   mapfile -t EX_NAMES < <(python3 -c "import json; [print(e['name']) for e in json.load(open('$jf',encoding='utf-8'))['exercises']]")
   mapfile -t EX_DIRS  < <(python3 -c "import json; [print(e.get('directory','').rstrip('/')) for e in json.load(open('$jf',encoding='utf-8'))['exercises']]")
   mapfile -t EX_PRIMARY < <(python3 -c "import json; [print(e.get('files',[''])[0]) for e in json.load(open('$jf',encoding='utf-8'))['exercises']]")
+  mapfile -t EX_TYPES < <(python3 -c "import json; [print(e.get('type','c')) for e in json.load(open('$jf',encoding='utf-8'))['exercises']]")
   local n="${#EX_IDS[@]}"
 
   while true; do
@@ -180,7 +201,7 @@ module_menu() {
     read -rp "  > " choice
     if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "$n" ]; then
       local i=$((choice - 1))
-      exercise_menu "$module" "${EX_NAMES[$i]}" "${EX_IDS[$i]}" "${EX_DIRS[$i]}" "${EX_PRIMARY[$i]}"
+      exercise_menu "$module" "${EX_NAMES[$i]}" "${EX_IDS[$i]}" "${EX_DIRS[$i]}" "${EX_PRIMARY[$i]}" "${EX_TYPES[$i]}"
     else
       case "$choice" in
         d|D) open_in_browser "$TOOL_ROOT/dashboard.html"; sleep 1 ;;
@@ -206,6 +227,30 @@ main_menu() {
     local n_modules; n_modules=$(get_n_modules)
     echo -e "\n  ${BOLD}Aktionen${RESET}"
     echo -e "   ${BOLD}1-${n_modules}${RESET}) Modul    ${BOLD}d${RESET}) Dashboard   ${BOLD}t${RESET}) Trophäen"
+    echo -e "   ${BOLD}p${RESET}) Peer       ${BOLD}g${RESET}) Git-Status   ${BOLD}q${RESET}) Beenden"
+    echo ""
+    read -rp "  > " choice
+    if [[ "$choice" =~ ^[0-9]+$ ]] && [ "$choice" -ge 1 ] && [ "$choice" -le "$n_modules" ]; then
+      local module_id; module_id=$(resolve_module_by_index "$choice")
+      [ -n "$module_id" ] && module_menu "$module_id"
+    else
+      case "$choice" in
+        d|D) open_in_browser "$TOOL_ROOT/dashboard.html"; sleep 1 ;;
+        p|P) launch_peer ;;
+        t|T) clear; bash "$SCRIPTS/trophy.sh"; echo ""; read -rp "  [Enter] ..." _ ;;
+        g|G)
+          clear; echo -e "${BOLD}Git-Status:${RESET}\n"
+          ( cd "$REPO_ROOT" && git status --short && echo "" && git log --oneline -5 2>/dev/null )
+          echo -e "\n${CYAN}Commit:${RESET}  cd \"$REPO_ROOT\" && git add -A && git commit -m \"...\" && git push"
+          echo ""; read -rp "  [Enter] ..." _
+          ;;
+        q|Q) clear; echo -e "${PURPLE}Bis bald! 🚀${RESET}\n"; exit 0 ;;
+      esac
+    fi
+  done
+}
+
+main_menu
     echo -e "   ${BOLD}p${RESET}) Peer       ${BOLD}g${RESET}) Git-Status   ${BOLD}q${RESET}) Beenden"
     echo ""
     read -rp "  > " choice
